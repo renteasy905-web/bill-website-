@@ -9,7 +9,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed,
+                        url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
             min-height: 100vh;
@@ -65,9 +67,19 @@
             font-size: 1.1em;
         }
 
-        form {
-            display: flex;
+        .form-step {
+            display: none;
             flex-direction: column;
+            animation: fadeInStep 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInStep {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-step.active {
+            display: flex;
         }
 
         label {
@@ -93,7 +105,7 @@
             transform: scale(1.02);
         }
 
-        button {
+        .btn-next, .btn-submit {
             padding: 15px;
             background: linear-gradient(45deg, #25d366, #128c7e);
             color: white;
@@ -104,15 +116,16 @@
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            margin-top: 10px;
         }
 
-        button:hover {
+        .btn-next:hover, .btn-submit:hover {
             background: linear-gradient(45deg, #128c7e, #25d366);
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
         }
 
-        button:active {
+        .btn-next:active, .btn-submit:active {
             transform: translateY(0);
         }
 
@@ -139,26 +152,52 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #3498db, #25d366);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>DraftNote Medical Billing Software Builder</h1>
         <p>If you have any medical billing needs, use our software to fill out the form below and submit to connect via WhatsApp.</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
         <form id="medicalForm">
-            <label for="ownerName">Name of the Owner:</label>
-            <input type="text" id="ownerName" name="ownerName" required>
-
-            <label for="medicalName">Name of the Medical Facility:</label>
-            <input type="text" id="medicalName" name="medicalName" required>
-
-            <label for="location">Location of Medical (City):</label>
-            <input type="text" id="location" name="location" required>
-
-            <label for="mobileNumber">Mobile Number:</label>
-            <input type="tel" id="mobileNumber" name="mobileNumber" required>
-
-            <button type="submit">Submit and Open WhatsApp</button>
+            <div class="form-step active" id="step1">
+                <label for="ownerName">Name of the Owner:</label>
+                <input type="text" id="ownerName" name="ownerName" required>
+                <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
+            </div>
+            <div class="form-step" id="step2">
+                <label for="medicalName">Name of the Medical Facility:</label>
+                <input type="text" id="medicalName" name="medicalName" required>
+                <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
+            </div>
+            <div class="form-step" id="step3">
+                <label for="location">Location of Medical (City):</label>
+                <input type="text" id="location" name="location" required>
+                <button type="button" class="btn-next" onclick="nextStep(3)">Next</button>
+            </div>
+            <div class="form-step" id="step4">
+                <label for="mobileNumber">Mobile Number:</label>
+                <input type="tel" id="mobileNumber" name="mobileNumber" required>
+                <button type="submit" class="btn-submit">Submit and Open WhatsApp</button>
+            </div>
         </form>
         <div class="loading" id="loading">
             <div class="spinner"></div>
@@ -167,6 +206,32 @@
     </div>
 
     <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function nextStep(step) {
+            if (validateStep(step)) {
+                document.getElementById(`step${step}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function validateStep(step) {
+            const input = document.querySelector(`#step${step} input`);
+            if (!input.value.trim()) {
+                alert('Please fill in this field before proceeding.');
+                return false;
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
         document.getElementById('medicalForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -184,7 +249,7 @@
                 const whatsappUrl = `https://wa.me/8088975913?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
                 loading.style.display = 'none';
-            }, 1500); // Simulate a brief loading time for smooth UX
+            }, 1500);
         });
     </script>
 </body>
