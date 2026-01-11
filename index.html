@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftNote Medical Billing Software Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #25d366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DraftNote Medical Billing Software Builder</h1>
+        <p>If you have any medical billing needs, use our software to fill out the form below and submit to connect via WhatsApp.</p>
+        <form id="medicalForm">
+            <label for="ownerName">Name of the Owner:</label>
+            <input type="text" id="ownerName" name="ownerName" required>
+
+            <label for="medicalName">Name of the Medical Facility:</label>
+            <input type="text" id="medicalName" name="medicalName" required>
+
+            <label for="location">Location of Medical (City):</label>
+            <input type="text" id="location" name="location" required>
+
+            <label for="mobileNumber">Mobile Number:</label>
+            <input type="tel" id="mobileNumber" name="mobileNumber" required>
+
+            <button type="submit">Submit and Open WhatsApp</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('medicalForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const ownerName = document.getElementById('ownerName').value;
+            const medicalName = document.getElementById('medicalName').value;
+            const location = document.getElementById('location').value;
+            const mobileNumber = document.getElementById('mobileNumber').value;
+
+            const message = `Hello, I am interested in your DraftNote Medical Billing Software. Details:\n- Owner Name: ${ownerName}\n- Medical Facility: ${medicalName}\n- Location (City): ${location}\n- Mobile Number: ${mobileNumber}`;
+
+            const whatsappUrl = `https://wa.me/8088975913?text=${encodeURIComponent(message)}`;
+
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
+</body>
+</html>
